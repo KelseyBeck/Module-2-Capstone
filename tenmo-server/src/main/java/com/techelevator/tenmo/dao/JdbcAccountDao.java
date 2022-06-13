@@ -1,7 +1,11 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class JdbcAccountDao implements accountDao{
@@ -21,4 +25,6 @@ public class JdbcAccountDao implements accountDao{
         Double balance = jdbcTemplate.queryForObject(sql,Double.class,username);
         return balance;
     }
+
+
 }

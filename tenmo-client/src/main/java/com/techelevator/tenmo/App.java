@@ -1,19 +1,23 @@
 package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
+import com.techelevator.tenmo.services.UserService;
 
 public class App {
 
     private static final String API_BASE_URL = "http://localhost:8080/";
 
     private final ConsoleService consoleService = new ConsoleService();
-    private final AccountService accountService = new AccountService();
+    private final AccountService accountService = new AccountService(API_BASE_URL);
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
+    private final UserService userService=new UserService(API_BASE_URL);
 
+    private User selectedUser;
     private AuthenticatedUser currentUser;
 
     public static void main(String[] args) {
@@ -101,12 +105,28 @@ public class App {
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
-		
-	}
+        consoleService.printAllUsers(currentUser,userService);
+        int userIdEntered=0;
+        System.out.println("enter a user id");
+        userIdEntered= consoleService.promptForInt("Please enter a user ID to process the sending operation");
+        System.out.println(userIdEntered);
+
+       selectedUser = userService.findUser(currentUser,userIdEntered);
+        System.out.println("You are sending money to this user: ");
+        System.out.println("User id: "+selectedUser.getId()+"  Username: "+ selectedUser.getUsername());
+        System.out.println("Do you want to continue?");
+    }
 
 	private void requestBucks() {
 		// TODO Auto-generated method stub
 		
 	}
+    //////////////// our APP's methods
+    private void sending(UserService userService,User selectedUser){
+        if ((currentUser.getUser().equals(selectedUser))){
+            System.out.println("You cannot send money to your own account");
+        }
+
+    }
 
 }

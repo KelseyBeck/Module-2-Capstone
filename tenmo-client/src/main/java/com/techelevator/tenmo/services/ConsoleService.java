@@ -1,7 +1,10 @@
 package com.techelevator.tenmo.services;
 
 
+import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.services.UserService;
 
 import java.math.BigDecimal;
 import java.util.Scanner;
@@ -87,5 +90,30 @@ public class ConsoleService {
     public void printErrorMessage() {
         System.out.println("An error occurred. Check the log for details.");
     }
+
+
+    ////////// Our print menus -----
+
+    public void printAllUsers(AuthenticatedUser authenticatedUser,UserService userService){
+        System.out.println("-------------------------------");
+        System.out.println("Users");
+        System.out.println("ID          UserName         ");
+        System.out.println("-------------------------------");
+
+        for (User user:userService.getUsers(authenticatedUser)){
+            //// print all users from the database except the current user
+            if (!(user.equals(authenticatedUser.getUser())))
+            System.out.println(user.getId()+"        "+user.getUsername());
+        }
+        System.out.println("-------------------------------");
+    }
+
+
+
+
+
+
+
+
 
 }

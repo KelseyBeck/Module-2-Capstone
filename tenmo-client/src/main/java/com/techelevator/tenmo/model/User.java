@@ -1,6 +1,6 @@
 package com.techelevator.tenmo.model;
 
-public class User {
+public class  User {
 
     private Long id;
     private String username;

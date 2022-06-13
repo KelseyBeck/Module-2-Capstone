@@ -4,18 +4,29 @@ import com.techelevator.tenmo.model.Transaction;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class JdbcTransactionDao implements TransactionDao {
 
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Transaction> findAllUserTransactions() {
-        return null;
+    public List<Transaction> findTransactionsByUserId(Long userId) {
+        List<Transaction> transactions = new ArrayList<>();
+        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfer WHERE account_from ILIKE ?;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+        while(results.next()) {
+            Transaction transaction = mapRowToTransaction(results);
+            transactions.add(transaction);
+        }
+        return transactions;
     }
+
 
     @Override
     public Transaction findTransactionByTransferId(Long transferId) throws Exception {

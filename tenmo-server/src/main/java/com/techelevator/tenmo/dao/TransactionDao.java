@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface TransactionDao {
 
-    List<Transaction> findAllUserTransactions();
+    List<Transaction> findTransactionsByUserId(Long userId);
 
     Transaction findTransactionByTransferId(Long transferId) throws Exception;
 

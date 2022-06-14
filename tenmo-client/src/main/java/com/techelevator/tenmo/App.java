@@ -95,7 +95,8 @@ public class App {
 
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
-        System.out.println("Your balance is: "+ accountService.getBalance(currentUser));
+
+        System.out.println("Your balance is: "+ accountService.getAccount(currentUser,currentUser.getUser().getId()).getBalance());
 	}
 
 	private void viewTransferHistory() {
@@ -122,10 +123,21 @@ public class App {
         Account toAccount = new Account();
         fromAccount=accountService.getAccount(currentUser, currentUser.getUser().getId());
         toAccount = accountService.getAccount(currentUser , (long) userIdEntered);
+        System.out.println("from account"+ fromAccount.getAccount_id()+"balance"+ fromAccount.getBalance());
         fromAccount.setBalance(fromAccount.getBalance().subtract(transferAmount));
         toAccount.setBalance(toAccount.getBalance().add(transferAmount));
+//
+
         accountService.updateAccountBalance(currentUser,fromAccount);
         accountService.updateAccountBalance(currentUser,toAccount);
+
+
+        System.out.println("the new balance of"+ currentUser.getUser().getUsername()+"is");
+        System.out.println(fromAccount.getBalance());
+
+        System.out.println("the new balance of"+ selectedUser.getUsername()+"is");
+        System.out.println(toAccount.getBalance());
+
     }
 
 	private void requestBucks() {

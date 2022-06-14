@@ -33,12 +33,12 @@ public class AccountService {
         return response.getBody();
 }
 
-    public BigDecimal updateAccountBalance(AuthenticatedUser user, Account account){
+    public void updateAccountBalance(AuthenticatedUser user, Account account){
     HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(user.getToken());
-    HttpEntity<Account> entity = new HttpEntity<>(headers);
-    ResponseEntity<Account> response = restTemplate.exchange(baseUrl+"accounts/"+ account.getAccount_id(), HttpMethod.PUT, entity, Account.class);
-        return response.getBody().getBalance();
+    HttpEntity<Account> entity = new HttpEntity<>(account,headers);
+    restTemplate.exchange(baseUrl+"accounts/"+ account.getUser_id(), HttpMethod.PUT, entity, Account.class);
 }
 
 }

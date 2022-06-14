@@ -29,14 +29,10 @@ public class AccountController {
         return jdbcAccountDao.getAccount(user_id);
     }
 
-    @PutMapping("accounts/{account_id}")
-    public BigDecimal updateAccountBalance(@RequestBody Account account, @PathVariable long account_id){
-        jdbcAccountDao.updateAccountBalance(account, account_id);
-        return null;
+    @PutMapping("accounts/{user_id}")
+    public void updateAccountBalance(@RequestBody Account account,@PathVariable long user_id){
+        jdbcAccountDao.updateAccountBalance(account);
     }
-
-
-
 
 
 

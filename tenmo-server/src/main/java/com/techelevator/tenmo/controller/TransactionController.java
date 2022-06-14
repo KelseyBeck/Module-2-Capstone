@@ -23,7 +23,7 @@ public class TransactionController {
         private TransactionDao transactionDao;
 
 
-        @GetMapping(value = "/{user_id}")
+        @GetMapping(value = "/users/{user_id}")
         public List<Transaction> findTransactionsByUserId(@PathVariable Long id) throws Exception {
         List<Transaction> transactions=null;
         transactions =transactionDao.findTransactionsByUserId(id);
@@ -31,7 +31,7 @@ public class TransactionController {
     }
 
 
-        @GetMapping(value = "/{id}")
+        @GetMapping(value = "/{transfer_id}")
         public Transaction findTransactionByTransferId(@PathVariable Long id) throws Exception {
             Transaction transaction=null;
             transaction = transactionDao.findTransactionByTransferId(id);

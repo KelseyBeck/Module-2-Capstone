@@ -1,5 +1,6 @@
 package com.techelevator.tenmo;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
@@ -7,6 +8,8 @@ import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
 import com.techelevator.tenmo.services.UserService;
+
+import java.math.BigDecimal;
 
 public class App {
 
@@ -114,7 +117,15 @@ public class App {
        selectedUser = userService.findUser(currentUser,userIdEntered);
         System.out.println("You are sending money to this user: ");
         System.out.println("User id: "+selectedUser.getId()+"  Username: "+ selectedUser.getUsername());
-        System.out.println("Do you want to continue?");
+        BigDecimal transferAmount = BigDecimal.valueOf(Long.parseLong(consoleService.promptForString("Please enter the amount you want to  send  the sending." )));
+        Account fromAccount = new Account();
+        Account toAccount = new Account();
+        fromAccount=accountService.getAccount(currentUser, currentUser.getUser().getId());
+        toAccount = accountService.getAccount(currentUser , (long) userIdEntered);
+        fromAccount.setBalance(fromAccount.getBalance().subtract(transferAmount));
+        toAccount.setBalance(toAccount.getBalance().add(transferAmount));
+        accountService.updateAccountBalance(currentUser,fromAccount);
+        accountService.updateAccountBalance(currentUser,toAccount);
     }
 
 	private void requestBucks() {

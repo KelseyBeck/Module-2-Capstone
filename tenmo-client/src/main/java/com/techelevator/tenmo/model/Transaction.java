@@ -1,9 +1,13 @@
 package com.techelevator.tenmo.model;
 
+
+
 import java.math.BigDecimal;
 
+
 public class Transaction {
-// need to get the correct datatypes
+
+    // need to get the correct datatypes
     private Long transferId;
     private Long transferTypeId;
     private Long transferStatusId;
@@ -59,11 +63,14 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public Transaction(Long transferId, Long transferTypeId, Long accountFrom, Long accountTo, BigDecimal amount) {
+    public Transaction() { }
+
+    public Transaction(Long transferTypeId, Long transferStatusId, Long accountFrom, Long accountTo, BigDecimal amount) {
 
         //need to look at that thing that generates id in a serialized way
-        this.transferId = transferId;
+
         this.transferTypeId = transferTypeId;
+        this.transferStatusId = transferStatusId;
         this.accountFrom = accountFrom;
         this.accountTo = accountTo;
         this.amount = amount;
@@ -80,4 +87,5 @@ public class Transaction {
                 ", amount=" + amount +
                 '}';
     }
+
 }

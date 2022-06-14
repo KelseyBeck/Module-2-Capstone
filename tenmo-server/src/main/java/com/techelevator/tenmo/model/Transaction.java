@@ -1,6 +1,9 @@
 package com.techelevator.tenmo.model;
 
+import org.springframework.stereotype.Component;
+
 import java.math.BigDecimal;
+
 
 public class Transaction {
 
@@ -62,11 +65,12 @@ public class Transaction {
 
     public Transaction() { }
 
-    public Transaction(Long transferId, Long transferTypeId, Long accountFrom, Long accountTo, BigDecimal amount) {
+    public Transaction(Long transferTypeId, Long transferStatusId, Long accountFrom, Long accountTo, BigDecimal amount) {
 
         //need to look at that thing that generates id in a serialized way
-        this.transferId = transferId;
+
         this.transferTypeId = transferTypeId;
+        this.transferStatusId = transferStatusId;
         this.accountFrom = accountFrom;
         this.accountTo = accountTo;
         this.amount = amount;

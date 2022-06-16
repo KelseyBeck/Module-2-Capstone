@@ -2,6 +2,7 @@ package com.techelevator.tenmo.services;
 
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.UserService;
@@ -93,6 +94,7 @@ public class ConsoleService {
 
 
     ////////// Our print menus -----
+
 
     public void printAllUsers(AuthenticatedUser authenticatedUser,UserService userService){
         System.out.println("-------------------------------");

@@ -31,11 +31,31 @@ public class TransferController {
     }
 
 
-    @GetMapping(value = "/{transferId}")
-    public Transfer findTransactionByTransferId(@PathVariable Long transferId) throws Exception {
-        Transfer transfer = null;
-        transfer = transferDao.findTransactionByTransferId(transferId);
-        return transfer;
+    @GetMapping(value = "/{transferId}/info/transfer_type")
+    public String findTransactionTypeByTransferId(@PathVariable Long transferId) throws Exception {
+        String transferType = "null";
+        transferType = transferDao.findTransactionTypeByTransferId(transferId);
+        return transferType;
+    }
+    @GetMapping(value = "/{transferId}/info/transfer_status")
+    public String findTransactionStatusByTransferId(@PathVariable Long transferId) throws Exception {
+        String transferStatus = "null";
+        transferStatus = transferDao.findTransactionTypeByTransferId(transferId);
+        return transferStatus;
+    }
+
+    @GetMapping(value = "/{transferId}/info/transfer_sender")
+    public String findTransactionSenderByTransferId(@PathVariable Long transferId) throws Exception {
+        String transferSender = "null";
+        transferSender = transferDao.findTransactionTypeByTransferId(transferId);
+        return transferSender;
+    }
+
+    @GetMapping(value = "/{transferId}/info/transfer_recipient")
+    public String findTransactionRecipientByTransferId(@PathVariable Long transferId) throws Exception {
+        String transferRecipient = "null";
+        transferRecipient = transferDao.findTransactionTypeByTransferId(transferId);
+        return transferRecipient;
     }
 
     @PostMapping(value = "")

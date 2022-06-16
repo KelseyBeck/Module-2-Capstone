@@ -41,5 +41,33 @@ public class TransferService {
         return   restTemplate.exchange(baseUrl+"transfers/"+transferID ,HttpMethod.GET, entity, Transfer.class).getBody();
     }
 
+    public String getTransfersTypeByTransferId(AuthenticatedUser authenticatedUser,Long transferID){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(authenticatedUser.getToken());
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        return   restTemplate.exchange(baseUrl+"transfers/"+transferID+"/info/transfer_type" ,HttpMethod.GET, entity, String.class).getBody();
+    }
+
+    public String getTransactionSenderByTransferId(AuthenticatedUser authenticatedUser,Long transferID){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(authenticatedUser.getToken());
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        return   restTemplate.exchange(baseUrl+"transfers/"+transferID+"/info/transfer_sender" ,HttpMethod.GET, entity, String.class).getBody();
+    }
+
+    public String getTransactionRecipientByTransferId(AuthenticatedUser authenticatedUser,Long transferID){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(authenticatedUser.getToken());
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        return   restTemplate.exchange(baseUrl+"transfers/"+transferID+"/info/transfer_recipient" ,HttpMethod.GET, entity, String.class).getBody();
+    }
+
+
+    public String getTransactionStatusByTransferId(AuthenticatedUser authenticatedUser,Long transferID){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(authenticatedUser.getToken());
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        return   restTemplate.exchange(baseUrl+"transfers/"+transferID+"/info/transfer_status" ,HttpMethod.GET, entity, String.class).getBody();
+    }
 
 }

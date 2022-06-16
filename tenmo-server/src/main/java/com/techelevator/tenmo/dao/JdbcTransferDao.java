@@ -1,12 +1,10 @@
 package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.model.Transfer;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,4 +72,27 @@ public class JdbcTransferDao implements TransferDao {
         return transaction;
     }
 
-}
+    @Override
+    public String findTransactionTypeByTransferId(Long transferId)  {
+        String sql = "SELECT transfer_type_desc FROM transfer Join transfer_type on transfer.transfer_type_id = transfer_type.transfer_type_id WHERE transfer_id = ?;";
+        String transferType = jdbcTemplate.queryForObject(sql, String.class, transferId);
+            return transferType;}
+    @Override
+    public String findTransactionStatusByTransferId(Long transferId)  {
+        String sql = "SELECT transfer_status_desc FROM transfer Join transfer_Status on transfer.transfer_status_id = transfer_status.transfer_status_id WHERE transfer_id = ?;";
+        String transferType = jdbcTemplate.queryForObject(sql, String.class, transferId);
+        return transferType;}
+    @Override
+    public String findTransactionSenderByTransferId(Long transferId)  {
+        String sql = "SELECT username FROM transfer Join account on transfer.account_from = account.account_id Join tenmo_user on account.user_id = tenmo_user.user_id WHERE transfer_id = ?;";
+        String transferSender = jdbcTemplate.queryForObject(sql, String.class, transferId);
+        return transferSender;}
+    @Override
+    public String findTransactionRecipientByTransferId(Long transferId)  {
+        String sql = "SELECT username FROM transfer Join account on transfer.account_to = account.account_id Join tenmo_user on account.user_id = tenmo_user.user_id WHERE transfer_id = ?;";
+        String transferSender = jdbcTemplate.queryForObject(sql, String.class, transferId);
+        return transferSender;}
+
+    }
+
+

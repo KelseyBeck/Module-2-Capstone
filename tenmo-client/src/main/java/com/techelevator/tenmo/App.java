@@ -120,10 +120,10 @@ public class App {
                 System.out.println("Transaction");
                 System.out.println("-------------------------------");
                 System.out.println("Transfer ID:" +transfer.getTransferId());
-                System.out.println("Transfer Type: " + transfer.getTransferTypeId());
-                System.out.println("Transfer Status: " + transfer.getTransferStatusId());
-                System.out.println("The sender: " + transfer.getAccountFrom());
-                System.out.println("The recipient: " + transfer.getAccountTo());
+                System.out.println("Transfer Type: " + transferService.getTransfersTypeByTransferId(currentUser,transferIdEntered));
+                System.out.println("Transfer Status: " + transferService.getTransactionStatusByTransferId(currentUser,transferIdEntered));
+                System.out.println("The sender: " + transferService.getTransactionSenderByTransferId(currentUser,transferIdEntered));
+                System.out.println("The recipient: " + transferService.getTransactionRecipientByTransferId(currentUser,transferIdEntered));
                 System.out.println("The amount: "+ transfer.getAmount() + " $");
                 System.out.println("-------------------------------");
 

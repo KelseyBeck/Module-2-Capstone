@@ -13,4 +13,13 @@ public interface TransferDao {
     Transfer findTransactionByTransferId(Long transferId) throws Exception;
 
     void create(Transfer transfer);
+
+
+    String findTransactionTypeByTransferId(Long transferId);
+
+    String findTransactionStatusByTransferId(Long transferId);
+
+    String findTransactionSenderByTransferId(Long transferId);
+
+    String findTransactionRecipientByTransferId(Long transferId);
 }

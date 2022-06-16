@@ -1,13 +1,7 @@
 package com.techelevator.tenmo;
 
-import com.techelevator.tenmo.model.Account;
-import com.techelevator.tenmo.model.AuthenticatedUser;
-import com.techelevator.tenmo.model.User;
-import com.techelevator.tenmo.model.UserCredentials;
-import com.techelevator.tenmo.services.AccountService;
-import com.techelevator.tenmo.services.AuthenticationService;
-import com.techelevator.tenmo.services.ConsoleService;
-import com.techelevator.tenmo.services.UserService;
+import com.techelevator.tenmo.model.*;
+import com.techelevator.tenmo.services.*;
 
 import java.math.BigDecimal;
 
@@ -19,6 +13,7 @@ public class App {
     private final AccountService accountService = new AccountService(API_BASE_URL);
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
     private final UserService userService=new UserService(API_BASE_URL);
+    private final TransferService transferService = new TransferService(API_BASE_URL);
 
     private User selectedUser;
     private AuthenticatedUser currentUser;
@@ -101,6 +96,47 @@ public class App {
 
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
+        System.out.println("-------------------------------");
+        System.out.println("Transactions");
+        System.out.println("Transfer ID            Amount         ");
+        System.out.println("-------------------------------");
+
+        for (Transfer transfer:transferService.getTransfersByUserId(currentUser)){
+            System.out.println(transfer.getTransferId()+"          "+ transfer.getAmount());
+        }
+        System.out.println("-------------------------------");
+        System.out.println(" ");
+        int transferChoice= consoleService.promptForInt("To exit pres 1, for transfer details press 2");
+        if (transferChoice==1){
+            consoleService.printMainMenu();
+        }
+        else if (transferChoice==2) {
+            long transferIdEntered = (long) consoleService.promptForInt("Please enter a transfer Id");
+            try {
+                System.out.println("in the try");
+                System.out.println("");
+                Transfer transfer=transferService.getTransfersByTransferId(currentUser,transferIdEntered);
+                System.out.println("-------------------------------");
+                System.out.println("Transaction");
+                System.out.println("-------------------------------");
+                System.out.println("Transfer ID:" +transfer.getTransferId());
+                System.out.println("Transfer Type: " + transfer.getTransferTypeId());
+                System.out.println("Transfer Status: " + transfer.getTransferStatusId());
+                System.out.println("The sender: " + transfer.getAccountFrom());
+                System.out.println("The recipient: " + transfer.getAccountTo());
+                System.out.println("The amount: "+ transfer.getAmount() + " $");
+                System.out.println("-------------------------------");
+
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else {
+            System.out.println("invalid input");
+            this.viewTransferHistory();
+        }
+
+
 	}
 
 	private void viewPendingRequests() {
@@ -123,33 +159,49 @@ public class App {
         Account toAccount = new Account();
         fromAccount=accountService.getAccount(currentUser, currentUser.getUser().getId());
         toAccount = accountService.getAccount(currentUser , (long) userIdEntered);
-        System.out.println("from account"+ fromAccount.getAccount_id()+"balance"+ fromAccount.getBalance());
-        fromAccount.setBalance(fromAccount.getBalance().subtract(transferAmount));
-        toAccount.setBalance(toAccount.getBalance().add(transferAmount));
+        if (this.checkingBeforeSending(currentUser.getUser(),selectedUser,transferAmount)){
+            System.out.println("from account"+ fromAccount.getAccount_id()+"balance"+ fromAccount.getBalance());
+            fromAccount.setBalance(fromAccount.getBalance().subtract(transferAmount));
+            toAccount.setBalance(toAccount.getBalance().add(transferAmount));
 //
+            accountService.updateAccountBalance(currentUser,fromAccount);
+            accountService.updateAccountBalance(currentUser,toAccount);
 
-        accountService.updateAccountBalance(currentUser,fromAccount);
-        accountService.updateAccountBalance(currentUser,toAccount);
+            System.out.println("the new balance of"+ currentUser.getUser().getUsername()+"is");
+            System.out.println(fromAccount.getBalance());
 
+            System.out.println("the new balance of"+ selectedUser.getUsername()+"is");
+            System.out.println(toAccount.getBalance());
 
-        System.out.println("the new balance of"+ currentUser.getUser().getUsername()+"is");
-        System.out.println(fromAccount.getBalance());
-
-        System.out.println("the new balance of"+ selectedUser.getUsername()+"is");
-        System.out.println(toAccount.getBalance());
+            ////
+            Transfer transfer = new Transfer(2L,2L,fromAccount.getAccount_id(),toAccount.getAccount_id(),transferAmount);
+            transferService.createTransfer(currentUser,transfer);
+        }
+        else {
+            System.out.println("Try later");
+        }
 
     }
 
 	private void requestBucks() {
 		// TODO Auto-generated method stub
-		
 	}
     //////////////// our APP's methods
-    private void sending(UserService userService,User selectedUser){
-        if ((currentUser.getUser().equals(selectedUser))){
-            System.out.println("You cannot send money to your own account");
+    private boolean checkingBeforeSending(User fromUser,User toUser,BigDecimal transferAmount){
+        boolean isOk=true;
+        if (currentUser.getUser().equals(toUser)){
+            System.out.println("sorry, you can't do that,sending to your self");
+            isOk=false;
         }
-
+        if (accountService.getBalance(currentUser).compareTo(transferAmount)<0){
+            System.out.println("you have insufficient funds");
+            isOk=false;
+        }
+        if (transferAmount.compareTo(BigDecimal.valueOf(0))<0){
+            System.out.println("You can't send negative amounts");
+            isOk=false;
+        }
+        return isOk;
     }
 
 }

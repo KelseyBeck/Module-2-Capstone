@@ -1,12 +1,11 @@
 package com.techelevator.tenmo.model;
 
-import org.springframework.stereotype.Component;
+
 
 import java.math.BigDecimal;
 
 
-public class Transaction {
-
+public class Transfer {
     // need to get the correct datatypes
     private Long transferId;
     private Long transferTypeId;
@@ -63,12 +62,10 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public Transaction() { }
+    public Transfer() { }
 
-    public Transaction(Long transferTypeId, Long transferStatusId, Long accountFrom, Long accountTo, BigDecimal amount) {
-
+    public Transfer(Long transferTypeId, Long transferStatusId, Long accountFrom, Long accountTo, BigDecimal amount) {
         //need to look at that thing that generates id in a serialized way
-
         this.transferTypeId = transferTypeId;
         this.transferStatusId = transferStatusId;
         this.accountFrom = accountFrom;
@@ -76,8 +73,21 @@ public class Transaction {
         this.amount = amount;
     }
 
+
+
     @Override
     public String toString() {
+        return "Transfer{" +
+                "transfer_id=" + transferId +
+                ", transfer_type_id=" + transferTypeId +
+                ", transfer_status_id=" + transferStatusId +
+                ", account_from=" + accountFrom +
+                ", account_to=" + accountTo +
+                ", amount=" + amount +
+                '}';
+    }
+
+    public String toStrings() {
         return "Transfer{" +
                 "transfer_id=" + transferId +
                 ", transfer_type_id=" + transferTypeId +

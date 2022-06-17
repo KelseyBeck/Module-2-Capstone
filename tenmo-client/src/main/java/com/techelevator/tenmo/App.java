@@ -99,25 +99,19 @@ public class App {
 
         int transferChoice= consoleService.promptForInt("To exit pres 1, for transfer details press 2");
 
-        if (transferChoice==1){
-            consoleService.printMainMenu();
-        }
-        else if (transferChoice==2) {
-            while (true) {
-                long transferIdEntered = (long) consoleService.promptForInt("Please enter a transfer Id");
+        if (transferChoice==2) {
+                long transferIdEntered = (long) consoleService.promptForInt("Please enter a transfer Id (0 to cancel)");
+                if (transferIdEntered==0) this.mainMenu();
                 try {
                     consoleService.printTransferDetails(currentUser, transferService, transferIdEntered);
                 } catch (Exception e) {
                     System.out.println("Wrong transfer id, please try again");
                     this.viewTransferHistory();
-                    break;
                 }
-            }
         }
         else {
-            System.out.println("Invalid input");
-            this.viewTransferHistory();
-
+            System.out.println("Returning to the Main Menu...");
+            this.mainMenu();
         }
 
 	}
@@ -129,17 +123,13 @@ public class App {
 	private void sendBucks() {
 		// TODO Auto-generated method stub
         /// variables
-        boolean inSending=true;
-        long userIdEntered=1;
-        Account fromAccount = new Account();
-        Account toAccount = new Account();
+
         BigDecimal transferAmount=new BigDecimal(0.00);
 
         while (true){
             consoleService.printAllUsers(currentUser,userService);
-
             //////// handling the user id input
-            userIdEntered= consoleService.promptForInt("Please enter a user ID to process the sending operation "+ "(0 to cancel)");
+           long userIdEntered= consoleService.promptForInt("Please enter a user ID to process the sending operation "+ "(0 to cancel)");
             if (userIdEntered==0) break;
             /////checking if the user id is valid and store it in a user object if it exists
             try {
@@ -159,8 +149,8 @@ public class App {
             }
 
             //// instantiating accounts
-            fromAccount=accountService.getAccountByUser(currentUser, currentUser.getUser().getId());
-            toAccount = accountService.getAccountByUser(currentUser , userIdEntered);
+            Account fromAccount=accountService.getAccountByUser(currentUser, currentUser.getUser().getId());
+            Account toAccount = accountService.getAccountByUser(currentUser , userIdEntered);
 
             ////////////////
             if (this.checkingBeforeSending(currentUser.getUser(),selectedUser,transferAmount,userIdEntered)){

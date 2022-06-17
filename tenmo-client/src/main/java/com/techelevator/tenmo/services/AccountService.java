@@ -25,7 +25,7 @@ public class AccountService {
         return response.getBody().setScale(2);
     }
 
-    public Account getAccount(AuthenticatedUser user, Long userId){
+    public Account getAccountByUser(AuthenticatedUser user, Long userId){
     HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(user.getToken());
     HttpEntity<Account> entity = new HttpEntity<>(headers);

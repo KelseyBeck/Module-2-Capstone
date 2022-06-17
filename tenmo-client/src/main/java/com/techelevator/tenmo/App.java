@@ -90,52 +90,35 @@ public class App {
 
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
-
-        System.out.println("Your balance is: "+ accountService.getAccount(currentUser,currentUser.getUser().getId()).getBalance());
+        System.out.println("Your balance is: "+ accountService.getAccountByUser(currentUser,currentUser.getUser().getId()).getBalance());
 	}
 
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
-        System.out.println("-------------------------------");
-        System.out.println("Transactions");
-        System.out.println("Transfer ID            Amount         ");
-        System.out.println("-------------------------------");
+        ///////// printing all the transfers
+        consoleService.printAllTransactions(currentUser,transferService);
 
-        for (Transfer transfer:transferService.getTransfersByUserId(currentUser)){
-            System.out.println(transfer.getTransferId()+"          "+ transfer.getAmount());
-        }
-        System.out.println("-------------------------------");
-        System.out.println(" ");
         int transferChoice= consoleService.promptForInt("To exit pres 1, for transfer details press 2");
+
         if (transferChoice==1){
             consoleService.printMainMenu();
         }
         else if (transferChoice==2) {
-            long transferIdEntered = (long) consoleService.promptForInt("Please enter a transfer Id");
-            try {
-                System.out.println("in the try");
-                System.out.println("");
-                Transfer transfer=transferService.getTransfersByTransferId(currentUser,transferIdEntered);
-                System.out.println("-------------------------------");
-                System.out.println("Transaction");
-                System.out.println("-------------------------------");
-                System.out.println("Transfer ID:" +transfer.getTransferId());
-                System.out.println("Transfer Type: " + transferService.getTransfersTypeByTransferId(currentUser,transferIdEntered));
-                System.out.println("Transfer Status: " + transferService.getTransactionStatusByTransferId(currentUser,transferIdEntered));
-                System.out.println("The sender: " + transferService.getTransactionSenderByTransferId(currentUser,transferIdEntered));
-                System.out.println("The recipient: " + transferService.getTransactionRecipientByTransferId(currentUser,transferIdEntered));
-                System.out.println("The amount: "+ transfer.getAmount() + " $");
-                System.out.println("-------------------------------");
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            while (true) {
+                long transferIdEntered = (long) consoleService.promptForInt("Please enter a transfer Id");
+                try {
+                    consoleService.printTransferDetails(currentUser, transferService, transferIdEntered);
+                } catch (Exception e) {
+                    System.out.println("Wrong transfer id, please try again");
+                    this.viewTransferHistory();
+                    break;
+                }
             }
         }
         else {
-            System.out.println("invalid input");
+            System.out.println("Invalid input");
             this.viewTransferHistory();
-        }
 
+        }
 
 	}
 
@@ -146,19 +129,24 @@ public class App {
 	private void sendBucks() {
 		// TODO Auto-generated method stub
         consoleService.printAllUsers(currentUser,userService);
+
         int userIdEntered=0;
         System.out.println("enter a user id");
         userIdEntered= consoleService.promptForInt("Please enter a user ID to process the sending operation");
-        System.out.println(userIdEntered);
+        try {
+            selectedUser = userService.findUser(currentUser,userIdEntered);
+        } catch (Exception e) {
+            System.out.println("Wrong user id, please enter a valid user id");
+            this.sendBucks();
+        }
 
-       selectedUser = userService.findUser(currentUser,userIdEntered);
         System.out.println("You are sending money to this user: ");
         System.out.println("User id: "+selectedUser.getId()+"  Username: "+ selectedUser.getUsername());
         BigDecimal transferAmount = BigDecimal.valueOf(Long.parseLong(consoleService.promptForString("Please enter the amount you want to  send  the sending." )));
         Account fromAccount = new Account();
         Account toAccount = new Account();
-        fromAccount=accountService.getAccount(currentUser, currentUser.getUser().getId());
-        toAccount = accountService.getAccount(currentUser , (long) userIdEntered);
+        fromAccount=accountService.getAccountByUser(currentUser, currentUser.getUser().getId());
+        toAccount = accountService.getAccountByUser(currentUser , (long) userIdEntered);
         if (this.checkingBeforeSending(currentUser.getUser(),selectedUser,transferAmount)){
             System.out.println("from account"+ fromAccount.getAccount_id()+"balance"+ fromAccount.getBalance());
             fromAccount.setBalance(fromAccount.getBalance().subtract(transferAmount));

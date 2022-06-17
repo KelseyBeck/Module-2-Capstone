@@ -9,5 +9,5 @@ public interface accountDao {
 
     double getBalance(String username);
 
-    Account getAccount(Long userId);
+    Account findAccountByUserId(Long userId);
 }

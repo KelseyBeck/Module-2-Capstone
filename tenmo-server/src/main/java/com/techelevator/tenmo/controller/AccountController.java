@@ -26,7 +26,7 @@ public class AccountController {
 
     @GetMapping("accounts/{user_id}")
     public Account getAccount(@PathVariable Long user_id){
-        return jdbcAccountDao.getAccount(user_id);
+        return jdbcAccountDao.findAccountByUserId(user_id);
     }
 
     @PutMapping("accounts/{user_id}")

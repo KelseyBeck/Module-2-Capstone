@@ -110,6 +110,31 @@ public class ConsoleService {
         System.out.println("-------------------------------");
     }
 
+    public void printAllTransactions(AuthenticatedUser authenticatedUser,TransferService transferService){
+        System.out.println("-------------------------------");
+        System.out.println("Transactions");
+        System.out.println("Transfer ID            Amount         ");
+        System.out.println("-------------------------------");
+
+        for (Transfer transfer:transferService.getTransfersByUserId(authenticatedUser)){
+            System.out.println(transfer.getTransferId()+"          "+ transfer.getAmount());
+        }
+        System.out.println("-------------------------------");
+    }
+
+    public void printTransferDetails(AuthenticatedUser authenticatedUser,TransferService transferService,Long transferId){
+        Transfer transfer=transferService.getTransfersByTransferId(authenticatedUser,transferId);
+        System.out.println("-------------------------------");
+        System.out.println("Transaction");
+        System.out.println("-------------------------------");
+        System.out.println("Transfer ID:" +transfer.getTransferId());
+        System.out.println("Transfer Type: " + transferService.getTransfersTypeByTransferId(authenticatedUser,transferId));
+        System.out.println("Transfer Status: " + transferService.getTransactionStatusByTransferId(authenticatedUser,transferId));
+        System.out.println("The sender: " + transferService.getTransactionSenderByTransferId(authenticatedUser,transferId));
+        System.out.println("The recipient: " + transferService.getTransactionRecipientByTransferId(authenticatedUser,transferId));
+        System.out.println("The amount: "+ transfer.getAmount() + " $");
+        System.out.println("-------------------------------");
+    }
 
 
 

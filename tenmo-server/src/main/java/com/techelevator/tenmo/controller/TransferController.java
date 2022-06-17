@@ -30,7 +30,10 @@ public class TransferController {
         return transactions;
     }
 
-
+    @GetMapping(value = "/{transfer_id}")
+    public Transfer getTransfersByTransferId(@PathVariable Long transfer_id) throws Exception {
+        return transferDao.findTransactionByTransferId(transfer_id);
+    }
     @GetMapping(value = "/{transferId}/info/transfer_type")
     public String findTransactionTypeByTransferId(@PathVariable Long transferId) throws Exception {
         String transferType = "null";
@@ -40,21 +43,21 @@ public class TransferController {
     @GetMapping(value = "/{transferId}/info/transfer_status")
     public String findTransactionStatusByTransferId(@PathVariable Long transferId) throws Exception {
         String transferStatus = "null";
-        transferStatus = transferDao.findTransactionTypeByTransferId(transferId);
+        transferStatus = transferDao.findTransactionStatusByTransferId(transferId);
         return transferStatus;
     }
 
     @GetMapping(value = "/{transferId}/info/transfer_sender")
     public String findTransactionSenderByTransferId(@PathVariable Long transferId) throws Exception {
         String transferSender = "null";
-        transferSender = transferDao.findTransactionTypeByTransferId(transferId);
+        transferSender = transferDao.findTransactionSenderByTransferId(transferId);
         return transferSender;
     }
 
     @GetMapping(value = "/{transferId}/info/transfer_recipient")
     public String findTransactionRecipientByTransferId(@PathVariable Long transferId) throws Exception {
         String transferRecipient = "null";
-        transferRecipient = transferDao.findTransactionTypeByTransferId(transferId);
+        transferRecipient = transferDao.findTransactionRecipientByTransferId(transferId);
         return transferRecipient;
     }
 

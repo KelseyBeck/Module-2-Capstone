@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.services;
 
 
+import com.techelevator.tenmo.App;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
@@ -136,7 +137,21 @@ public class ConsoleService {
         System.out.println("-------------------------------");
     }
 
+    public void printSelectedUser(User user){
+        System.out.println("You are sending money to this user: ");
+        System.out.println("User id: "+user.getId()+"  Username: "+ user.getUsername());
+    }
 
+    public boolean checkIfUserIdExists(AuthenticatedUser authenticatedUser,UserService userService,Long userIdEntered){
+        User userToBeChecked=null;
+        try {
+            userToBeChecked = userService.findUser(authenticatedUser,userIdEntered);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Wrong user id, please enter a valid user id");
+            return false;
+        }
+    }
 
 
 

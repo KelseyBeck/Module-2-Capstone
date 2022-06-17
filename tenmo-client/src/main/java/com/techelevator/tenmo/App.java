@@ -128,55 +128,67 @@ public class App {
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
-        consoleService.printAllUsers(currentUser,userService);
-
-        int userIdEntered=0;
-        System.out.println("enter a user id");
-        userIdEntered= consoleService.promptForInt("Please enter a user ID to process the sending operation");
-        try {
-            selectedUser = userService.findUser(currentUser,userIdEntered);
-        } catch (Exception e) {
-            System.out.println("Wrong user id, please enter a valid user id");
-            this.sendBucks();
-        }
-
-        System.out.println("You are sending money to this user: ");
-        System.out.println("User id: "+selectedUser.getId()+"  Username: "+ selectedUser.getUsername());
-        BigDecimal transferAmount = BigDecimal.valueOf(Long.parseLong(consoleService.promptForString("Please enter the amount you want to  send  the sending." )));
+        /// variables
+        boolean inSending=true;
+        long userIdEntered=1;
         Account fromAccount = new Account();
         Account toAccount = new Account();
-        fromAccount=accountService.getAccountByUser(currentUser, currentUser.getUser().getId());
-        toAccount = accountService.getAccountByUser(currentUser , (long) userIdEntered);
-        if (this.checkingBeforeSending(currentUser.getUser(),selectedUser,transferAmount)){
-            System.out.println("from account"+ fromAccount.getAccount_id()+"balance"+ fromAccount.getBalance());
-            fromAccount.setBalance(fromAccount.getBalance().subtract(transferAmount));
-            toAccount.setBalance(toAccount.getBalance().add(transferAmount));
-//
-            accountService.updateAccountBalance(currentUser,fromAccount);
-            accountService.updateAccountBalance(currentUser,toAccount);
+        BigDecimal transferAmount=new BigDecimal(0.00);
 
-            System.out.println("the new balance of"+ currentUser.getUser().getUsername()+"is");
-            System.out.println(fromAccount.getBalance());
+        while (true){
+            consoleService.printAllUsers(currentUser,userService);
 
-            System.out.println("the new balance of"+ selectedUser.getUsername()+"is");
-            System.out.println(toAccount.getBalance());
+            //////// handling the user id input
+            userIdEntered= consoleService.promptForInt("Please enter a user ID to process the sending operation "+ "(0 to cancel)");
+            if (userIdEntered==0) break;
+            /////checking if the user id is valid and store it in a user object if it exists
+            try {
+                selectedUser = userService.findUser(currentUser,userIdEntered);
+            } catch (Exception e) {
+                System.out.println("Wrong user id, please enter a valid user id");
+               this.sendBucks();
+            }
 
-            ////
-            Transfer transfer = new Transfer(2L,2L,fromAccount.getAccount_id(),toAccount.getAccount_id(),transferAmount);
-            transferService.createTransfer(currentUser,transfer);
-        }
-        else {
-            System.out.println("Try later");
-        }
+            //// printing the selected user (confirmation)
+            consoleService.printSelectedUser(selectedUser);
 
+            ////// handling the transfer amount
+            transferAmount = consoleService.promptForBigDecimal("Please enter the amount you want to  send  the sending. (0 to cancel)");
+            if (transferAmount.compareTo(new BigDecimal(0))==0 ) {
+                break;
+            }
+
+            //// instantiating accounts
+            fromAccount=accountService.getAccountByUser(currentUser, currentUser.getUser().getId());
+            toAccount = accountService.getAccountByUser(currentUser , userIdEntered);
+
+            ////////////////
+            if (this.checkingBeforeSending(currentUser.getUser(),selectedUser,transferAmount,userIdEntered)){
+
+               this.handleTheSendingTransfer(currentUser,fromAccount,toAccount,transferAmount);
+            }
+            else {
+                System.out.println("Please Try again");
+                this.sendBucks();
+            }
+
+        }////while loop end
+
+        this.mainMenu();
     }
 
 	private void requestBucks() {
 		// TODO Auto-generated method stub
 	}
     //////////////// our APP's methods
-    private boolean checkingBeforeSending(User fromUser,User toUser,BigDecimal transferAmount){
+    private boolean checkingBeforeSending(User fromUser,User toUser,BigDecimal transferAmount,Long userIdEntered){
         boolean isOk=true;
+
+        if (!consoleService.checkIfUserIdExists(currentUser,userService,userIdEntered))  {
+            System.out.println("You entered a wrong user id");
+            isOk=false;
+        }
+            ///////
         if (currentUser.getUser().equals(toUser)){
             System.out.println("sorry, you can't do that,sending to your self");
             isOk=false;
@@ -190,6 +202,26 @@ public class App {
             isOk=false;
         }
         return isOk;
+    }
+
+    private void handleTheSendingTransfer(AuthenticatedUser authenticatedUser,Account fromAccount,Account toAccount,BigDecimal transferAmount){
+        //// updating both accounts objects + update the database tables
+        this.updatingAccounts(fromAccount,toAccount,transferAmount);
+        //// creating a transfer object with a sending Type + approved
+        Transfer transfer = new Transfer(2L,2L,fromAccount.getAccount_id(),toAccount.getAccount_id(),transferAmount);
+        ////// sending creating the request (updating the database)
+        transferService.createTransfer(currentUser,transfer);
+    }
+    private void updatingAccounts(Account fromAccount,Account toAccount,BigDecimal transferAmount){
+
+        try {
+            fromAccount.setBalance(fromAccount.getBalance().subtract(transferAmount));
+            toAccount.setBalance(toAccount.getBalance().add(transferAmount));
+            accountService.updateAccountBalance(currentUser,fromAccount);
+            accountService.updateAccountBalance(currentUser,toAccount);
+        } catch (Exception e) {
+            System.out.println("Updating accounts failed");
+        }
     }
 
 }

@@ -34,12 +34,14 @@ public class TransferController {
     public Transfer getTransfersByTransferId(@PathVariable Long transfer_id) throws Exception {
         return transferDao.findTransactionByTransferId(transfer_id);
     }
+
     @GetMapping(value = "/{transferId}/info/transfer_type")
     public String findTransactionTypeByTransferId(@PathVariable Long transferId) throws Exception {
         String transferType = "null";
         transferType = transferDao.findTransactionTypeByTransferId(transferId);
         return transferType;
     }
+
     @GetMapping(value = "/{transferId}/info/transfer_status")
     public String findTransactionStatusByTransferId(@PathVariable Long transferId) throws Exception {
         String transferStatus = "null";

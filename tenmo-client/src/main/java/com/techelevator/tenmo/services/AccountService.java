@@ -41,5 +41,4 @@ public class AccountService {
     restTemplate.exchange(baseUrl+"accounts/"+ account.getUser_id(), HttpMethod.PUT, entity, Account.class);
 }
 
-
 }

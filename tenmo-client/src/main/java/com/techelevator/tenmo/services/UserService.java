@@ -4,7 +4,10 @@ import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.util.BasicLogger;
 import org.springframework.http.*;
+import org.springframework.objenesis.strategy.BaseInstantiatorStrategy;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
@@ -35,8 +38,8 @@ public class UserService {
         HttpEntity<User> entity = new HttpEntity<>(headers);
         //// url (api + users/id)..
         String url = baseUrl + "users/"+ (int)userId;
-        ResponseEntity<User> response = restTemplate.exchange(url, HttpMethod.GET, entity, User.class);
-        return response.getBody();
+            ResponseEntity<User> response = restTemplate.exchange(url, HttpMethod.GET, entity, User.class);
+            return response.getBody();
     }
 
 

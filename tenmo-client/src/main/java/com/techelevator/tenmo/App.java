@@ -2,6 +2,7 @@ package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.*;
 import com.techelevator.tenmo.services.*;
+import com.techelevator.util.BasicLogger;
 
 import java.math.BigDecimal;
 
@@ -106,6 +107,7 @@ public class App {
                     consoleService.printTransferDetails(currentUser, transferService, transferIdEntered);
                 } catch (Exception e) {
                     System.out.println("Wrong transfer id, please try again");
+                    BasicLogger.log("Invalid Transfer Id entered: "+transferIdEntered);
                     this.viewTransferHistory();
                 }
         }
@@ -113,7 +115,6 @@ public class App {
             System.out.println("Returning to the Main Menu...");
             this.mainMenu();
         }
-
 	}
 
 	private void viewPendingRequests() {
@@ -121,11 +122,7 @@ public class App {
 	}
 
 	private void sendBucks() {
-		// TODO Auto-generated method stub
-        /// variables
-
         BigDecimal transferAmount=new BigDecimal(0.00);
-
         while (true){
             consoleService.printAllUsers(currentUser,userService);
             //////// handling the user id input
@@ -136,22 +133,19 @@ public class App {
                 selectedUser = userService.findUser(currentUser,userIdEntered);
             } catch (Exception e) {
                 System.out.println("Wrong user id, please enter a valid user id");
+                BasicLogger.log("invalid User Id entered :"+userIdEntered);
                this.sendBucks();
             }
-
             //// printing the selected user (confirmation)
             consoleService.printSelectedUser(selectedUser);
-
             ////// handling the transfer amount
             transferAmount = consoleService.promptForBigDecimal("Please enter the amount you want to  send  the sending. (0 to cancel)");
             if (transferAmount.compareTo(new BigDecimal(0))==0 ) {
                 break;
             }
-
             //// instantiating accounts
             Account fromAccount=accountService.getAccountByUser(currentUser, currentUser.getUser().getId());
             Account toAccount = accountService.getAccountByUser(currentUser , userIdEntered);
-
             ////////////////
             if (this.checkingBeforeSending(currentUser.getUser(),selectedUser,transferAmount,userIdEntered)){
 
@@ -161,9 +155,7 @@ public class App {
                 System.out.println("Please Try again");
                 this.sendBucks();
             }
-
         }////while loop end
-
         this.mainMenu();
     }
 
@@ -172,23 +164,22 @@ public class App {
 	}
     //////////////// our APP's methods
     private boolean checkingBeforeSending(User fromUser,User toUser,BigDecimal transferAmount,Long userIdEntered){
+
         boolean isOk=true;
 
-        if (!consoleService.checkIfUserIdExists(currentUser,userService,userIdEntered))  {
-            System.out.println("You entered a wrong user id");
-            isOk=false;
-        }
-            ///////
         if (currentUser.getUser().equals(toUser)){
             System.out.println("sorry, you can't do that,sending to your self");
+            BasicLogger.log("The user with the ID:"+ currentUser.getUser().getId() + " tried to send money to his own account");
             isOk=false;
         }
         if (accountService.getBalance(currentUser).compareTo(transferAmount)<0){
             System.out.println("you have insufficient funds");
+            BasicLogger.log("The user with the ID:"+ currentUser.getUser().getId() + " tried to transfer, but had insufficient funds");
             isOk=false;
         }
         if (transferAmount.compareTo(BigDecimal.valueOf(0))<0){
             System.out.println("You can't send negative amounts");
+            BasicLogger.log("The user with the ID:"+ currentUser.getUser().getId() + " tried to send a negative amount");
             isOk=false;
         }
         return isOk;

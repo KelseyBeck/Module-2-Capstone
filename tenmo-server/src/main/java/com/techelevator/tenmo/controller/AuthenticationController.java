@@ -61,7 +61,6 @@ public class AuthenticationController {
      * Object to return as body in JWT Authentication.
      */
     static class LoginResponse {
-
         private String token;
         private User user;
 

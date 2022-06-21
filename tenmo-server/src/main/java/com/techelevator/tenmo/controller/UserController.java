@@ -3,8 +3,10 @@ package com.techelevator.tenmo.controller;
 import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -22,8 +24,7 @@ public class UserController {
 
     @GetMapping(value = "/{id}")
     public User findUserById(@PathVariable Long id){
-       User user=null;
-       user = userDao.findByUserById(id);
+       User user = userDao.findByUserById(id);
         return user;
     }
 

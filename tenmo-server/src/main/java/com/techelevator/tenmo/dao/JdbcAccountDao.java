@@ -3,7 +3,10 @@ package com.techelevator.tenmo.dao;
 import com.techelevator.tenmo.model.Account;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
 
 @Component
 public class JdbcAccountDao implements accountDao{
@@ -15,24 +18,23 @@ public class JdbcAccountDao implements accountDao{
 
 
     @Override
-    public double getBalance(String username) {
+    public BigDecimal getBalance(String username) {
         String sql = "select balance from account " +
                 "join tenmo_user on account.user_id= tenmo_user.user_id " +
                 "WHERE username = ? ";
 
-        Double balance = jdbcTemplate.queryForObject(sql,Double.class,username);
+        BigDecimal balance = jdbcTemplate.queryForObject(sql,BigDecimal.class,username);
         return balance;
     }
 
     @Override
-    public Account findAccountByUserId(Long userId){
+    public Account findAccountByUserId(Long userId) throws Exception {
         String sql = "select * from account where user_id = ?";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, userId);
-        Account account=null;
         if(rowSet.next()){
-           account = mapRowToAccount(rowSet);
+           return mapRowToAccount(rowSet);
         }
-        return account;
+        throw new Exception( "Account with User id " + userId + " was not found.");
     }
 
     public void updateAccountBalance(Account account){

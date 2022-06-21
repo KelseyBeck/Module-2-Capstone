@@ -98,15 +98,15 @@ public class App {
         ///////// printing all the transfers
         consoleService.printAllTransactions(currentUser,transferService);
 
-        int transferChoice= consoleService.promptForInt("To exit pres 1, for transfer details press 2");
+        int transferChoice= consoleService.promptForInt("To exit pres 1, for transfer details press 2: ");
 
         if (transferChoice==2) {
-                long transferIdEntered = (long) consoleService.promptForInt("Please enter a transfer Id (0 to cancel)");
+                long transferIdEntered = (long) consoleService.promptForInt("Please enter a transfer Id (0 to cancel): ");
                 if (transferIdEntered==0) this.mainMenu();
                 try {
                     consoleService.printTransferDetails(currentUser, transferService, transferIdEntered);
                 } catch (Exception e) {
-                    System.out.println("Wrong transfer id, please try again");
+                    System.out.println("Invalid transfer id, please try again");
                     BasicLogger.log("Invalid Transfer Id entered: "+transferIdEntered);
                     this.viewTransferHistory();
                 }
@@ -126,20 +126,20 @@ public class App {
         while (true){
             consoleService.printAllUsers(currentUser,userService);
             //////// handling the user id input
-           long userIdEntered= consoleService.promptForInt("Please enter a user ID to process the sending operation "+ "(0 to cancel)");
+           long userIdEntered= consoleService.promptForInt("Please enter a user ID to process the sending operation "+ "(0 to cancel): ");
             if (userIdEntered==0) break;
             /////checking if the user id is valid and store it in a user object if it exists
             try {
                 selectedUser = userService.findUser(currentUser,userIdEntered);
             } catch (Exception e) {
-                System.out.println("Wrong user id, please enter a valid user id");
-                BasicLogger.log("invalid User Id entered :"+userIdEntered);
+                System.out.println("invalid user id, please enter a valid user id");
+                BasicLogger.log("The user: "+ currentUser.getUser().getUsername()+" has entered an invalid User Id: "+userIdEntered);
                this.sendBucks();
             }
             //// printing the selected user (confirmation)
             consoleService.printSelectedUser(selectedUser);
             ////// handling the transfer amount
-            transferAmount = consoleService.promptForBigDecimal("Please enter the amount you want to  send  the sending. (0 to cancel)");
+            transferAmount = consoleService.promptForBigDecimal("Please enter the amount you want to  send  the sending. (0 to cancel): ");
             if (transferAmount.compareTo(new BigDecimal(0))==0 ) {
                 break;
             }
@@ -150,6 +150,9 @@ public class App {
             if (this.checkingBeforeSending(currentUser.getUser(),selectedUser,transferAmount,userIdEntered)){
 
                this.handleTheSendingTransfer(currentUser,fromAccount,toAccount,transferAmount);
+                System.out.println("The amount: "+ transferAmount+" has successfully Transferred to the user: "+ selectedUser.getUsername());
+                System.out.println("Returning to the main menu");
+                break;
             }
             else {
                 System.out.println("Please Try again");
@@ -164,21 +167,21 @@ public class App {
 	}
     //////////////// our APP's methods
     private boolean checkingBeforeSending(User fromUser,User toUser,BigDecimal transferAmount,Long userIdEntered){
-
         boolean isOk=true;
 
+
         if (currentUser.getUser().equals(toUser)){
-            System.out.println("sorry, you can't do that,sending to your self");
+            System.out.println("Sorry! you can't perform a sending to your own account");
             BasicLogger.log("The user with the ID:"+ currentUser.getUser().getId() + " tried to send money to his own account");
             isOk=false;
         }
         if (accountService.getBalance(currentUser).compareTo(transferAmount)<0){
-            System.out.println("you have insufficient funds");
+            System.out.println("Sorry! you have insufficient funds");
             BasicLogger.log("The user with the ID:"+ currentUser.getUser().getId() + " tried to transfer, but had insufficient funds");
             isOk=false;
         }
         if (transferAmount.compareTo(BigDecimal.valueOf(0))<0){
-            System.out.println("You can't send negative amounts");
+            System.out.println("Sorry! You can't send negative amounts");
             BasicLogger.log("The user with the ID:"+ currentUser.getUser().getId() + " tried to send a negative amount");
             isOk=false;
         }

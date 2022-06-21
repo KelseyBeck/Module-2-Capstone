@@ -20,12 +20,12 @@ public class AccountController {
     private JdbcAccountDao jdbcAccountDao;
 
     @GetMapping(value = "users/{username}/balance")
-    public double getBalance(@PathVariable String username){
-        return jdbcAccountDao.getBalance(username);
+    public BigDecimal getBalance(@PathVariable String username) {
+            return jdbcAccountDao.getBalance(username);
     }
 
     @GetMapping("accounts/{user_id}")
-    public Account getAccount(@PathVariable Long user_id){
+    public Account getAccount(@PathVariable Long user_id) throws Exception {
         return jdbcAccountDao.findAccountByUserId(user_id);
     }
 

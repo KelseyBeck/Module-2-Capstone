@@ -31,13 +31,16 @@ public class JdbcTransferDao implements TransferDao {
     }
 
     @Override
-    public List<Transfer> findTransactionsByUserId(Long userId) {
+    public List<Transfer> findTransactionsByUserId(Long userId) throws Exception {
         List<Transfer> transactions = new ArrayList<>();
         String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfer Join account on transfer.account_from = account.account_id WHERE account_from = (select account.account_id from account where account.user_id = ? ) or account_to = (select account.account_id from account where account.user_id = ? );";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId,userId);
         while(results.next()) {
             Transfer transaction = mapRowToTransaction(results);
             transactions.add(transaction);
+        }
+        if (transactions.size()==0){
+            throw new Exception("Invalid user id : "+ userId);
         }
         return transactions;
     }
